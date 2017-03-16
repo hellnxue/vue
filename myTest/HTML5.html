@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<title>无标题文档</title>
+ 
+
+<script src="../dist/vue.js"></script>
+
+</head>
+<body>
+
+ <p id="el1"  v-bind:class="name"  >
+ 	Message: {{ msgs }}
+ 	<button v-bind:disabled="someDynamicCondition">Button</button>
+ </p>  
+
+
+ <p id="el2"    v-html="pp">Message: {{ pp }}</p>  
+ <p>hello world</p>  
+
+
+
+ <div id="app1">
+ 	Javascript表达式:{{ value ? 'yes':'no' }}
+ 	<a v-bind:href="url">指令 DOM属性绑定</a>
+ 	<a :href="url">指令缩写</a>
+ 	<!-- <a @href="url">指令缩写</a>   -->
+
+ 	<button @click="say">给DOM绑定事件</button> 
+
+ 	<fieldset>
+ 		<legend>计算属性</legend>
+ 		<p>{{message}}</p>  
+ 		<p>{{reversedMessage}}</p>  
+
+ 		<!-- <p>{{reversedMessage()}}</p> 为啥这么写不行呢？？？ -->
+
+ 		<p>{{now}}</p>  
+
+ 		<p>计算setter：{{fullName}}</p>  
+
+ 	</fieldset>
+
+
+  	<fieldset>
+ 		<legend>v-model</legend>
+ 		<input v-model="message" placeholder="edit me">
+		<p>Message is: {{ message }}</p>
+
+ 	</fieldset>	
+
+
+ 
+    <fieldset>
+        <legend>条件渲染</legend>
+         
+        <h1 v-if="ok">hello</h1>
+
+        <template v-if="ok">
+          <h1>Title</h1>
+          <p>Paragraph 1</p>
+          <p>Paragraph 2</p>
+        </template>
+
+
+        <div v-if="Math.random()>0.5">
+            Now you see me   
+        </div>
+        <div v-else>
+            Now you don't
+        </div>
+
+
+
+        <div v-if="type === 'A'">
+          A
+        </div>
+        <div v-else-if="type === 'B'">
+          B
+        </div>
+        <div v-else-if="type === 'C'">
+          C
+        </div>
+        <div v-else>
+          Not A/B/C
+        </div>
+
+    </fieldset> 
+ </div> 
+ <script type="text/javascript">
+     var vm=new Vue({
+        el:"#el1",
+        data:{
+            msgs:"hello vue1",
+            name:"蜡笔小新",
+            someDynamicCondition:true
+        }
+     });
+
+
+     var vm=new Vue({
+        el:"#el2",
+        data:{
+            pp:"hello vue2"  
+
+             
+        }
+     });
+
+     var app1=new Vue({
+     	el:"#app1",
+     	data:{
+     		value:true,
+     		url:"www.baidu.com",
+     		message:"hello world!",
+     		firstName:"Tom",
+     		lastName:"Jack",
+            ok:"true",
+            type:"A"
+     	},
+     	methods:{
+     		say:function(){
+     			alert("hello");
+     		}
+     	},
+     	computed:{
+     		reversedMessage:function(){
+     			return this.message.split('').reverse().join('');
+     		},
+     		now:function(){
+     			return Date.now();
+     		},
+     		fullName:{
+     			get:function(){
+     				return this.firstName+" "+this.lastName;
+     			},
+     			set:function(newValue){
+     				var names=newValue.split(" ");
+     				this.firstName=names[0];
+     				this.lastName=names[names.length-1];
+     			}
+
+     		}
+     	}
+     });
+
+     
+      
+
+ </script>
+</body>
+</html>
