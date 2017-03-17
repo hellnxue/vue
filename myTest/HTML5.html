@@ -88,7 +88,57 @@
         </div>
 
     </fieldset> 
+
+
+    <fieldset>
+        <legend>列表渲染</legend>
+
+        <h4>迭代数组</h4>
+         
+         <ul>
+             <li v-for="(item,index) of items">{{parentMsg}}-{{item}}-{{index}}</li>
+         </ul>
+
+          <ul>
+            <template>
+              <li v-for="(item,index) of items">{{parentMsg}}-{{item}}-{{index}}</li>  
+              <li>template</li>  
+            </template>
+             
+         </ul>
+
+
+         <h4>迭代对象</h4>
+          <ul>
+             <li v-for="(value,key,index) in objects" v-on:click="doClick">{{index}}、{{key}}:{{value}}</li>
+         </ul>
+
+         <h4>整数迭代v-for</h4>
+         <div>
+             <span v-for="n in 10">{{n}}</span>
+         </div>
+
+         <div><h5>{{doMsg()}}</h5></div>
+
+    </fieldset>   
  </div> 
+
+
+
+ <h3 style="background:hsla(60,50%,50%,.5);">事件监听</h3>
+ <fieldset id="app2">
+   
+   <button v-on:click="counter+=1" >hello</button>
+    <p>点击了{{counter}}次</p>
+
+   <h4>内联处理器方法</h4>
+   <button v-on:click="say('hi')"  style="display: block;"> say hi</button>
+
+   <h4>内联处理器方法，特殊变量$event</h4>
+   <form action="www.baidu.com">
+        <button v-on:click="submits('hi',$event)"   > have event</button>
+   </form>
+ </fieldset>
  <script type="text/javascript">
      var vm=new Vue({
         el:"#el1",
@@ -118,12 +168,28 @@
      		firstName:"Tom",
      		lastName:"Jack",
             ok:"true",
-            type:"A"
+            type:"A",
+            parentMsg:"parentMsg",
+            items:['water','bule sky'],
+            objects:{
+                name:"Tom",
+                age:20
+            }
      	},
      	methods:{
      		say:function(){
      			alert("hello");
-     		}
+     		},
+            doClick:function(event){
+                  // console.log( event.target);
+                  // event.target.setAttribute("style","color:yellow;");
+                  console.log(event.target.tagName);
+                  console.log(event.target.nodeName);
+                  // event.target.cssText="color:red;"; //这句怎么不起作用呢？
+            },
+            doMsg:function(){
+                return "This is methods's function";
+            }
      	},
      	computed:{
      		reversedMessage:function(){
@@ -147,6 +213,24 @@
      });
 
      
+
+     var app2=new Vue({
+        el:"#app2",
+        data:{
+            counter:0
+        } ,
+        methods:{
+            say:function(param){
+                alert(param);
+            },
+            submits:function(param,event){
+                if (event) {
+                    event.preventDefault();
+                }
+                alert(param);
+            }
+        }
+     });
       
 
  </script>
