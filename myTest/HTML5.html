@@ -134,10 +134,31 @@
    <h4>内联处理器方法</h4>
    <button v-on:click="say('hi')"  style="display: block;"> say hi</button>
 
+    <h4>事件绑定方式一</h4>
+   <button v-on:click="hsay()"  style="display: block;">v-on:click</button>
+
+     <h4>事件绑定方式二</h4>
+   <button @click="hsay()"  style="display: block;">@click</button>
+
    <h4>内联处理器方法，特殊变量$event</h4>
+
    <form action="www.baidu.com">
         <button v-on:click="submits('hi',$event)"   > have event</button>
    </form>
+
+     <h4>事件修饰符 .once</h4>
+   <!-- 点击事件将只会触发一次 -->
+    <a v-on:click.once="doThis">点击只触发一次</a>
+
+   <h4>阻止超链接的默认行为.prevent</h4>
+    
+    <a v-on:click.prevent="doPrevent" href="baidu.com">页面跳转</a>
+
+
+     <h4>按键修饰符.enter</h4>
+    
+    <input v-on:keyup.enter="submits">
+
  </fieldset>
  <script type="text/javascript">
      var vm=new Vue({
@@ -228,6 +249,19 @@
                     event.preventDefault();
                 }
                 alert(param);
+            }
+            ,
+            hsay:function(){
+                console.log("事件绑定");
+            },
+            doThis:function(){
+                console.log('事件只触发一次')
+            },
+            doPrevent:function(){
+                console.log('点击了超链接')
+            },
+            submits:function(){
+                console.log('enter键')
             }
         }
      });
