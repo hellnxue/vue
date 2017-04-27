@@ -4,6 +4,13 @@
 <meta charset="utf-8" />
 
 <title>无标题文档</title>
+<style type="text/css">
+    
+    .deepColor{
+        background: yellow;
+        color: pink;
+    }
+</style>
  
 
 <script src="../dist/vue.js"></script>
@@ -11,7 +18,7 @@
 </head>
 <body>
 
- <p id="el1"  v-bind:class="name"  >
+ <p id="el1"  v-bind:data-name="name"  >
  	Message: {{ msgs }}
  	<button v-bind:disabled="someDynamicCondition">Button</button>
  </p>  
@@ -34,10 +41,12 @@
  		<legend>计算属性</legend>
  		<p>{{message}}</p>  
  		<p>{{reversedMessage}}</p>  
+        <p>{{reversedMessage1()}}</p>
 
  		<!-- <p>{{reversedMessage()}}</p> 为啥这么写不行呢？？？ -->
 
  		<p>{{now}}</p>  
+        <p id="now1">{{now1()}}</p>  
 
  		<p>计算setter：{{fullName}}</p>  
 
@@ -159,7 +168,79 @@
     
     <input v-on:keyup.enter="submits">
 
+
+
+    <h4>Class 与 Style 绑定</h4>
+    <p v-bind:class="{deepColor:isShow}">动态绑定class类</p>
+
+    
+    <h4>表单控件绑定</h4>
+    <input v-model="message" placeholder="edit me">
+    <p>Message is: {{ message }}</p>
+
+     <h4>复选框</h4>
+    <input type="checkbox" id="checkbox" v-model="checked">
+   <label for="checkbox">{{ checked }}</label>
+
+
+
+   
+     <h4>多个勾选框，绑定到同一个数组：</h4>
+
+    <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+    <label for="jack">Jack</label>
+    <input type="checkbox" id="john" value="John" v-model="checkedNames">
+    <label for="john">John</label>
+    <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+    <label for="mike">Mike</label>
+    <br>
+    <span>Checked names: {{ checkedNames }}</span>
+
+
+
+<h4>单选按钮</h4>
+<div id="example-4" class="demo">
+  <input type="radio" id="one"  value="One" v-model="pickeds"  >
+  <label for="one">One</label>
+  <br>
+  <input type="radio" id="two" value="Two" v-model="pickeds">
+  <label for="two">Two</label>
+  <br>
+  <span>Picked: {{ pickeds }}</span>
+</div>
+
+
  </fieldset>
+
+
+
+ <fieldset id="app3">
+
+    <legend>组件</legend>
+    <simple-counter></simple-counter>
+    <simple-counter></simple-counter>
+    <simple-counter></simple-counter>
+
+ </fieldset>
+ <script type="text/javascript">
+
+    //组件注册
+     Vue.component('simple-counter',{
+        template:'<button v-on:click="counter += 1">{{ counter }}</button>',
+        data:function(){
+            return {
+                    counter:0
+                } 
+        }
+     })
+
+     var vcm=new Vue({
+        el:'#app3'
+     })
+
+ </script>
+
+
  <script type="text/javascript">
      var vm=new Vue({
         el:"#el1",
@@ -210,12 +291,23 @@
             },
             doMsg:function(){
                 return "This is methods's function";
+            },
+            //计算属性中实现同样效果的反转属性值得方法
+            reversedMessage1:function(){
+                return this.message.split('').reverse().join('');
+            },
+
+            /*相比计算属性中的now函数，此处的now1方法会在app1重新渲染的时候执行，例如修改app1.message='love me'的时候，页面模板#now1处的值会重新计算奥~~~*/
+            now1:function(){
+                return Date.now();
             }
      	},
+        // 计算属性(计算属性是基于他们的依赖(如此处的依赖是data中的message)进行缓存的)
      	computed:{
      		reversedMessage:function(){
      			return this.message.split('').reverse().join('');
      		},
+            /*此处的值只会计算一次，Date.now()不是响应式依赖*/
      		now:function(){
      			return Date.now();
      		},
@@ -238,7 +330,12 @@
      var app2=new Vue({
         el:"#app2",
         data:{
-            counter:0
+            counter:0,
+            isShow:true,
+            message:'bind data',
+            checked:false,
+            checkedNames:[],
+            pickeds:''
         } ,
         methods:{
             say:function(param){
