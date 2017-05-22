@@ -29,7 +29,7 @@
 
 
 
- <div id="app1">
+ <div id="app1" >
  	Javascript表达式:{{ value ? 'yes':'no' }}
  	<a v-bind:href="url">指令 DOM属性绑定</a>
  	<a :href="url">指令缩写</a>
@@ -58,6 +58,33 @@
  		<input v-model="message" placeholder="edit me">
 		<p>Message is: {{ message }}</p>
 
+
+        <select   id="staging" name="staging" v-model="selected">
+          <option value="">全选</option>
+          <option value="百度1">百度</option>
+          <option value="3601">360</option>
+          <option value="应用宝1">应用宝</option>
+          <option value="小米1">小米</option>
+          <option value="魅族1">魅族</option>
+          <option value="oppo1">oppo</option>
+          <option value="小米1">小米</option>
+          <option value="小米1">小米</option>
+        </select>
+        <p>selected is: {{ selected }}</p>
+
+        <select   id="staging" name="staging" v-model="selected1" :value="selected1">
+         <!-- 设置默认选中列表用v-model="selected1"或者:value="selected1" 都可以：<select   id="staging" name="staging"   :value="selected1"> -->
+          <option value="">全选</option>
+          <option value="百度11">百度</option>
+          <option value="36011">360</option>
+          <option value="应用宝11">应用宝</option>
+          <option value="小米11">小米</option>
+          <option value="魅族11">魅族</option>
+          <option value="oppo11">oppo</option>
+          <option value="小米11">小米</option>
+          <option value="小米11">小米</option>
+        </select>
+        <p>selected is: {{ selected1 }}</p>
  	</fieldset>	
 
 
@@ -210,6 +237,15 @@
 </div>
 
 
+<h4>v-if 与v-show</h4>
+<div style="height: 50px;background: pink; text-align: center;" v-if="vIf">
+  <p>hello v-if</p>
+</div>
+
+<div style="height: 50px;background: yellow; text-align: center;" v-show="vShow">
+  <p>hello v-show</p>
+</div>
+
  </fieldset>
 
 
@@ -276,8 +312,16 @@
             objects:{
                 name:"Tom",
                 age:20
-            }
+            },
+            selected:null,
+            selected1:'百度11',
      	},
+        // 实例已经创建完成之后被调用。在这一步，实例已完成以下的配置：数据观测(data observer)，属性和方法的运算， watch/event 事件回调。然而，挂载阶段还没开始，$el 属性目前不可见。
+        created: function(){
+          var self = this;
+          // console.log(self.$el.getAttribute("id")); self.$el is undefined
+          console.log('实例创建完成')
+        },
      	methods:{
      		say:function(){
      			alert("hello");
@@ -335,7 +379,9 @@
             message:'bind data',
             checked:false,
             checkedNames:[],
-            pickeds:''
+            pickeds:'',
+            vIf:true,
+            vShow:true
         } ,
         methods:{
             say:function(param){
