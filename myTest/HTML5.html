@@ -10,6 +10,14 @@
         background: yellow;
         color: pink;
     }
+
+    .computed{
+      background: yellow;
+    }
+
+    .methods{
+      background: pink;
+    }
 </style>
  
 
@@ -39,16 +47,25 @@
 
  	<fieldset>
  		<legend>计算属性</legend>
- 		<p>{{message}}</p>  
- 		<p>{{reversedMessage}}</p>  
-        <p>{{reversedMessage1()}}</p>
+ 		<p>{{message}}</p> 
 
- 		<!-- <p>{{reversedMessage()}}</p> 为啥这么写不行呢？？？ -->
+    <!-- 注：如果计算方法A 和methods方法B不用在模板中的话，实例中的message属性变化时，这两种方法都不会执行的。 --> 
+ 		<p class="computed">========computed计算属性A:{{reversedMessage}}</p>  
+    <p class="methods">------methods方法B：{{reversedMessage1()}}</p>
 
- 		<p>{{now}}</p>  
-        <p id="now1">{{now1()}}</p>  
+ 		<!-- <p>{{reversedMessage()}}</p> 为啥这么写不行呢？？？  计算方法不能带括号的吧。。。。 -->
 
- 		<p>计算setter：{{fullName}}</p>  
+ 		<p class="computed">computed计算属性now:{{now}}</p>  
+    <p id="now1" class="methods">methods方法now1():{{now1()}}</p>  
+
+ 		<p>计算setter：{{fullName}}</p> 
+
+    <h4>watch监测vue实例上的属性的数据变动,当下拉选项改变时，watchTest的值会发生变化，watch中的监测也会执行，绑定值得同时也可以代替onchange事件了.....</h4>
+    <select v-model="watchTest">
+      <option>apple</option>
+      <option>芒果</option>
+      <option>banana</option>
+    </select> 
 
  	</fieldset>
 
@@ -305,53 +322,56 @@
      		message:"hello world!",
      		firstName:"Tom",
      		lastName:"Jack",
-            ok:"true",
-            type:"A",
-            parentMsg:"parentMsg",
-            items:['water','bule sky'],
-            objects:{
-                name:"Tom",
-                age:20
-            },
-            selected:null,
-            selected1:'百度11',
-     	},
-        // 实例已经创建完成之后被调用。在这一步，实例已完成以下的配置：数据观测(data observer)，属性和方法的运算， watch/event 事件回调。然而，挂载阶段还没开始，$el 属性目前不可见。
-        created: function(){
-          var self = this;
-          // console.log(self.$el.getAttribute("id")); self.$el is undefined
-          console.log('实例创建完成')
+        ok:"true",
+        type:"A",
+        parentMsg:"parentMsg",
+        items:['water','bule sky'],
+        objects:{
+            name:"Tom",
+            age:20
         },
+        selected:null,
+        selected1:'百度11',
+        watchTest:'apple'
+     	},
+      // 实例已经创建完成之后被调用。在这一步，实例已完成以下的配置：数据观测(data observer)，属性和方法的运算， watch/event 事件回调。然而，挂载阶段还没开始，$el 属性目前不可见。
+      created: function(){
+        var self = this;
+        // console.log(self.$el.getAttribute("id")); self.$el is undefined
+        console.log('实例创建完成')
+      },
      	methods:{
      		say:function(){
      			alert("hello");
      		},
-            doClick:function(event){
-                  // console.log( event.target);
-                  // event.target.setAttribute("style","color:yellow;");
-                  console.log(event.target.tagName);
-                  console.log(event.target.nodeName);
-                  // event.target.cssText="color:red;"; //这句怎么不起作用呢？
-            },
-            doMsg:function(){
-                return "This is methods's function";
-            },
-            //计算属性中实现同样效果的反转属性值得方法
-            reversedMessage1:function(){
-                return this.message.split('').reverse().join('');
-            },
+        doClick:function(event){
+              // console.log( event.target);
+              // event.target.setAttribute("style","color:yellow;");
+              console.log(event.target.tagName);
+              console.log(event.target.nodeName);
+              // event.target.cssText="color:red;"; //这句怎么不起作用呢？
+        },
+        doMsg:function(){
+            return "This is methods's function";
+        },
+        //计算属性中reversedMessage方法 相比下，实现同样效果的反转属性值的methods方法
+        reversedMessage1:function(){
+            
+            return this.message.split('').reverse().join('');
+        },
 
-            /*相比计算属性中的now函数，此处的now1方法会在app1重新渲染的时候执行，例如修改app1.message='love me'的时候，页面模板#now1处的值会重新计算奥~~~*/
-            now1:function(){
-                return Date.now();
-            }
+        /*相比计算属性中的now函数，此处的now1方法会在app1重新渲染的时候执行，例如修改app1.message='love me'的时候，页面模板#now1处的值会重新计算奥~~~*/
+        now1:function(){
+            return Date.now();
+        }
      	},
-        // 计算属性(计算属性是基于他们的依赖(如此处的依赖是data中的message)进行缓存的)
+     /*  计算属性(计算属性是基于他们的依赖(如此处的依赖是data中的message)进行缓存的，只要message的值不变，这个计算属性就不会执行，而methods中的reversedMessage1方法在vue的其它实例的属性值发生变化时都会被执行的。)*/
      	computed:{
      		reversedMessage:function(){
+          console.log('reversedMessage=====================reversedMessage/////');
      			return this.message.split('').reverse().join('');
      		},
-            /*此处的值只会计算一次，Date.now()不是响应式依赖*/
+        /*此处的值只会计算一次，Date.now()不是响应式依赖,因此不会再次计算*/
      		now:function(){
      			return Date.now();
      		},
@@ -366,7 +386,12 @@
      			}
 
      		}
-     	}
+     	},
+      watch:{
+        watchTest:function(newVal){
+          console.log(newVal);
+        }
+      }
      });
 
      
