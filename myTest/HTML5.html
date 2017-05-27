@@ -166,6 +166,12 @@
              <li v-for="(value,key,index) in objects" v-on:click="doClick">{{index}}、{{key}}:{{value}}</li>
          </ul>
 
+         
+          <h4>迭代对象数组</h4>
+          <ul>
+             <li v-for="(item,index) in itemsObj" v-on:click="doClick">{{item.name}}-{{index}}</li>
+         </ul>
+
          <h4>整数迭代v-for</h4>
          <div>
              <span v-for="n in 10">{{n}}</span>
@@ -325,6 +331,7 @@
         ok:"true",
         type:"A",
         parentMsg:"parentMsg",
+        itemsObj:[{name:'helln'},{name:'tom'},{name:'jack'}],
         items:['water','bule sky'],
         objects:{
             name:"Tom",
