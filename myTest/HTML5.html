@@ -65,8 +65,11 @@
       <option>apple</option>
       <option>芒果</option>
       <option>banana</option>
-    </select> 
+    </select>
 
+    <h4>响应的data属性</h4>
+    <p @click='responseTest'>{{response}}</p> 
+    <p>{{name}}</p>
  	</fieldset>
 
 
@@ -339,7 +342,8 @@
         },
         selected:null,
         selected1:'百度11',
-        watchTest:'apple'
+        watchTest:'apple',
+        response:'hello'
      	},
       // 实例已经创建完成之后被调用。在这一步，实例已完成以下的配置：数据观测(data observer)，属性和方法的运算， watch/event 事件回调。然而，挂载阶段还没开始，$el 属性目前不可见。
       created: function(){
@@ -370,6 +374,10 @@
         /*相比计算属性中的now函数，此处的now1方法会在app1重新渲染的时候执行，例如修改app1.message='love me'的时候，页面模板#now1处的值会重新计算奥~~~*/
         now1:function(){
             return Date.now();
+        },
+        responseTest:function(){
+          this.$data.name=123;
+          console.log(this.$data.name)
         }
      	},
      /*  计算属性(计算属性是基于他们的依赖(如此处的依赖是data中的message)进行缓存的，只要message的值不变，这个计算属性就不会执行，而methods中的reversedMessage1方法在vue的其它实例的属性值发生变化时都会被执行的。)*/
