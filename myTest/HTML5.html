@@ -18,6 +18,23 @@
     .methods{
       background: pink;
     }
+
+   h4{
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    height: 30px;
+
+    font-family:'CrimsonRoman', cursive;
+    text-align:center;
+    background-color:#ccc;
+    margin:30px;
+    color:#33CCFF;
+    border-radius:6px;
+    background:linear-gradient(#FFCCCC,#fff 50%,#FFCCCC);
+    background:-moz-linear-gradient(#FFCCCC,#fff 50%,#FFCCCC);
+
+   }
 </style>
  
 
@@ -68,8 +85,9 @@
     </select>
 
     <h4>响应的data属性</h4>
-    <p @click='responseTest'>{{response}}</p> 
-    <p>{{name}}</p>
+    <p @click='responseTest'>data里的属性：{{rpObj.response}}</p> 
+    <p>后期添加到data上的：{{ rpObj.responseProp}}</p>
+    <button type="button" @click="responseTest1">setTest</button>
  	</fieldset>
 
 
@@ -181,6 +199,13 @@
          </div>
 
          <div><h5>{{doMsg()}}</h5></div>
+
+
+          <h4>v-once指令  通过使用 v-once 指令，你也能执行一次性地插值，当数据改变时，插值处的内容不会更新。 该节点上所有的数据绑定都不在改变</h4>
+         <h2 v-once> This will never change {{onceMsg}}
+          <p>Message is: {{ message }}</p>
+         </h2>
+         <button type="button" @click="onceTest">用v-once指令绑定的数据在实例数据变化时，插值不会改变</button>
 
     </fieldset>   
  </div> 
@@ -343,7 +368,12 @@
         selected:null,
         selected1:'百度11',
         watchTest:'apple',
-        response:'hello'
+        
+        rpObj:{
+          response:'hello'
+        },
+        onceMsg:'hello v-once'
+
      	},
       // 实例已经创建完成之后被调用。在这一步，实例已完成以下的配置：数据观测(data observer)，属性和方法的运算， watch/event 事件回调。然而，挂载阶段还没开始，$el 属性目前不可见。
       created: function(){
@@ -352,6 +382,9 @@
         console.log('实例创建完成')
       },
      	methods:{
+        onceTest:function(){
+          this.onceMsg='changed.......'
+        },
      		say:function(){
      			alert("hello");
      		},
@@ -376,8 +409,24 @@
             return Date.now();
         },
         responseTest:function(){
-          this.$data.name=123;
-          console.log(this.$data.name)
+           
+          var vm=this;
+          
+          vm.rpObj.response="changed....";//修改在实例中声明过的属性值
+
+          vm.rpObj.responseProp="new add prop";//新添加的属性赋值
+          
+          console.log(vm.rpObj.responseProp)
+        },
+        responseTest1:function(){
+
+          console.log(this)
+          
+          console.log(this.rpObj.responseProp)
+
+          // 此处的this.$set为什么不好用呢？？？？？？？？？？？
+          /*this.$set('rpObj.responseProp','change again');*/
+
         }
      	},
      /*  计算属性(计算属性是基于他们的依赖(如此处的依赖是data中的message)进行缓存的，只要message的值不变，这个计算属性就不会执行，而methods中的reversedMessage1方法在vue的其它实例的属性值发生变化时都会被执行的。)*/
