@@ -84,10 +84,16 @@
       <option>banana</option>
     </select>
 
-    <h4>响应的data属性</h4>
-    <p @click='responseTest'>data里的属性：{{rpObj.response}}</p> 
-    <p>后期添加到data上的：{{ rpObj.responseProp}}</p>
-    <button type="button" @click="responseTest1">setTest</button>
+    <h4>响应的data属性 </h4>
+    <p @click='responseTest'>点击测试vue实例动态添加的属性是否是响应式的 </p> 
+    <p>实例中声明过的属性：{{ rpObj.response}}</p>
+    <p>后期添加到data上的：{{ rpObj.responseProps}}</p>
+    <button type="button" @click="responseTest1">点击再次测试</button>
+
+    <button @click="aryTest" style="display: block;">测试--变动的数组</button>
+    <ul>
+      <li v-for="(item,index) in rpObj.items">{{item}}</li>
+    </ul>
  	</fieldset>
 
 
@@ -370,7 +376,8 @@
         watchTest:'apple',
         
         rpObj:{
-          response:'hello'
+          response:'hello',
+          items:['111','222']
         },
         onceMsg:'hello v-once'
 
@@ -408,24 +415,41 @@
         now1:function(){
             return Date.now();
         },
+        /*
+           由于JavaScript的限制，Vue不能检测到一下变动的数组：
+            1.当利用索引改变数组某一项的值时
+            2.更改数组的length值时
+           但是可以通过Vue.set或者数组的splice方法代替，此时才会引发Dom更新
+        */
+        aryTest:function(){
+          // this.rpObj.items[0]='更改之后的第一项'
+          Vue.set(this.rpObj.items,0,'更改之后的第一项');
+
+          // this.rpObj.items.splice(0,1,'更改之后的第一项');
+        },
+
+        /*vue不能动态检测实例创建之后添加属性，必须用vm.$set方法给嵌套的对象添加动态属性，此时的属性才是响应式的，在一处改动值时，不管在哪，该属性的值都会同步。
+        但是，有个新发现：像下面在给rpObj添加新的属性responseProps时，如果有修改rpObj之前声明过的属性response的值，那responseProps在DOM中会引发DOM更新，原因可能是vue的数据检测吧，响应的属性更改值得同时会把vue实例中的属性全部更新一遍，因此，responseProps才会在页面上看到值得变动，但之后若再单独更改responseProps的值，页面上不会发生数据更改，除非同时更改已声明过的属性的值，但这样不太现实。
+          
+        */
         responseTest:function(){
            
           var vm=this;
           
           vm.rpObj.response="changed....";//修改在实例中声明过的属性值
 
-          vm.rpObj.responseProp="new add prop";//新添加的属性赋值
+          vm.rpObj.responseProps="new add prop value";//新添加的属性赋值  这个值得变动会在页面上显现出来
           
-          console.log(vm.rpObj.responseProp)
+          // vm.$set(vm.rpObj,'responseProps','hihihihi')
+
+
         },
         responseTest1:function(){
 
-          console.log(this)
+         
+          // this.rpObj.response="changed....after";
+          this.rpObj.responseProps="new add prop sssss";//此处值得变动不会在页面上显现出来
           
-          console.log(this.rpObj.responseProp)
-
-          // 此处的this.$set为什么不好用呢？？？？？？？？？？？
-          /*this.$set('rpObj.responseProp','change again');*/
 
         }
      	},
